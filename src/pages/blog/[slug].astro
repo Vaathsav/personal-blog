@@ -1,0 +1,78 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+	const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+		(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+	);
+
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+const currentIndex = allPosts.findIndex((entry) => entry.id === post.id);
+const previousPost = currentIndex > 0 ? allPosts[currentIndex - 1] : undefined;
+const nextPost = currentIndex >= 0 && currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : undefined;
+
+const { Content } = await render(post);
+const publishDate = post.data.publishDate.toLocaleDateString('en', {
+	year: 'numeric',
+	month: 'long',
+	day: 'numeric',
+});
+const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).filter(Boolean).length / 200));
+---
+
+<BaseLayout title={`${post.data.title} | Sri Vaathsav`}>
+	<article>
+		<section class="page-hero article-hero">
+			<p class="eyebrow">Blog</p>
+			<h1>{post.data.title}</h1>
+			<p class="tagline">{post.data.description}</p>
+			<div class="article-meta">
+				<span>Published on {publishDate}</span>
+				<span>•</span>
+				<span>{readingTime} min read</span>
+			</div>
+			{post.data.tags.length > 0 && (
+				<div class="tag-list article-tags">
+					{post.data.tags.map((tag) => (
+						<span class="tag">{tag}</span>
+					))}
+				</div>
+			)}
+		</section>
+
+		<section class="content-section">
+			<div class="card article-card">
+				<a class="back-link" href="/blog">← Back to Blog</a>
+				<div class="article-content">
+					<Content />
+				</div>
+			</div>
+		</section>
+
+		{(previousPost || nextPost) && (
+			<nav class="article-nav" aria-label="Post navigation">
+				{previousPost ? (
+					<a class="article-nav-link" href={`/blog/${previousPost.id}`}>
+						<span aria-hidden="true">←</span> Previous article
+					</a>
+				) : <span />}
+				{nextPost ? (
+					<a class="article-nav-link" href={`/blog/${nextPost.id}`}>
+						Next article <span aria-hidden="true">→</span>
+					</a>
+				) : <span />}
+			</nav>
+		)}
+	</article>
+</BaseLayout>

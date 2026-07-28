@@ -1,0 +1,13 @@
+---
+const { title, summary, readingTime, publishDate } = Astro.props;
+---
+
+<article class="card blog-card">
+	<p class="card-meta">Upcoming Post</p>
+	<h3>{title}</h3>
+	<p>{summary}</p>
+	<div class="card-footer">
+		<span>{readingTime}</span>
+		<span>{publishDate}</span>
+	</div>
+</article>

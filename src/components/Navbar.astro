@@ -1,0 +1,26 @@
+---
+const pathname = Astro.url.pathname;
+const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
+
+const navItems = [
+	{ label: 'Home', href: '/' },
+	{ label: 'Blog', href: '/blog' },
+	{ label: 'Projects', href: '/projects' },
+	{ label: 'About', href: '/about' },
+	{ label: 'Contact', href: '/contact' },
+];
+---
+
+<header class="site-header">
+	<a class="brand" href="/">Sri Vaathsav</a>
+	<nav class="nav-links" aria-label="Primary navigation">
+		{navItems.map((item) => {
+			const isActive = normalizedPath === item.href;
+			return (
+				<a href={item.href} aria-current={isActive ? 'page' : undefined}>
+					{item.label}
+				</a>
+			);
+		})}
+	</nav>
+</header>

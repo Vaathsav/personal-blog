@@ -1,17 +1,60 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import BlogCard from '../components/BlogCard.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Vaathsav | Software Engineer">
+	<section class="hero-section">
+		<Hero />
+	</section>
+
+	<section class="content-section" id="blog" aria-labelledby="latest-articles-title">
+		<div class="section-heading">
+			<p class="section-label">Latest Articles</p>
+			<h2 id="latest-articles-title">Notes from the build</h2>
+		</div>
+		<div class="card-grid">
+			<BlogCard
+				title="Building My Personal Website with Astro and GitHub Copilot"
+				summary="A behind-the-scenes look at creating a fast, minimal personal site with Astro and modern AI-assisted workflows."
+				readingTime="6 min read"
+				publishDate="Coming soon"
+			/>
+			<BlogCard
+				title="Java Notes Every Backend Developer Should Know"
+				summary="Practical notes on Java fundamentals, concurrency, APIs, and patterns that help backend work feel more reliable."
+				readingTime="8 min read"
+				publishDate="Coming soon"
+			/>
+			<BlogCard
+				title="My Journey Learning Azure Cloud"
+				summary="Reflections on getting started with Azure, building cloud familiarity, and turning theory into hands-on experience."
+				readingTime="5 min read"
+				publishDate="Coming soon"
+			/>
+		</div>
+	</section>
+
+	<section class="about-preview" id="about">
+		<div>
+			<p class="section-label">About</p>
+			<h2>Engineering with care for detail and momentum</h2>
+		</div>
+		<p>
+			I work across product, frontend, and platform concerns, with a focus on clean interfaces, maintainable code, and thoughtful collaboration.
+		</p>
+	</section>
+
+	<section class="content-section" id="projects" aria-labelledby="projects-title">
+		<div class="section-heading">
+			<p class="section-label">Selected Projects</p>
+			<h2 id="projects-title">A few systems I’ve shaped</h2>
+		</div>
+		<div class="card-grid">
+			<ProjectCard title="Design system foundations" description="Created reusable UI patterns for product teams to move faster without sacrificing quality." />
+			<ProjectCard title="Platform reliability" description="Improved deployment health and observability for a customer-facing service." />
+		</div>
+	</section>
+</BaseLayout>
