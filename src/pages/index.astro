@@ -1,8 +1,12 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import BlogCard from '../components/BlogCard.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+const latestPosts = posts.slice(0, 3);
 ---
 
 <BaseLayout title="Vaathsav | Software Engineer">
@@ -12,49 +16,64 @@ import ProjectCard from '../components/ProjectCard.astro';
 
 	<section class="content-section" id="blog" aria-labelledby="latest-articles-title">
 		<div class="section-heading">
-			<p class="section-label">Latest Articles</p>
-			<h2 id="latest-articles-title">Notes from the build</h2>
+			<p class="section-label">Latest from the Blog</p>
+			<h2 id="latest-articles-title">Most recent writing</h2>
+		</div>
+		{latestPosts.length > 0 ? (
+			<div class={`card-grid blog-home-grid blog-home-grid-${Math.min(latestPosts.length, 3)}`}>
+				{latestPosts.map((post) => {
+					const publishDate = post.data.publishDate.toLocaleDateString('en', {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+					});
+					const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).filter(Boolean).length / 200));
+
+					return (
+						<a class="card blog-card" href={`/blog/${post.id}`}>
+							<p class="card-meta">{publishDate}</p>
+							<h3>{post.data.title}</h3>
+							<p>{post.data.description}</p>
+							{post.data.tags.length > 0 && (
+								<div class="tag-list">
+									{post.data.tags.map((tag) => (
+										<span class="tag">{tag}</span>
+									))}
+								</div>
+							)}
+							<div class="card-footer">
+								<span>{readingTime} min read</span>
+								<span aria-hidden="true">→</span>
+							</div>
+						</a>
+					);
+				})}
+			</div>
+		) : (
+			<p>No blog posts yet.</p>
+		)}
+	</section>
+
+	<section class="content-section" id="projects" aria-labelledby="projects-title">
+		<div class="section-heading">
+			<p class="section-label">Current Project</p>
+			<h2 id="projects-title">Personal Engineering Blog</h2>
 		</div>
 		<div class="card-grid">
-			<BlogCard
-				title="Building My Personal Website with Astro and GitHub Copilot"
-				summary="A behind-the-scenes look at creating a fast, minimal personal site with Astro and modern AI-assisted workflows."
-				readingTime="6 min read"
-				publishDate="Coming soon"
-			/>
-			<BlogCard
-				title="Java Notes Every Backend Developer Should Know"
-				summary="Practical notes on Java fundamentals, concurrency, APIs, and patterns that help backend work feel more reliable."
-				readingTime="8 min read"
-				publishDate="Coming soon"
-			/>
-			<BlogCard
-				title="My Journey Learning Azure Cloud"
-				summary="Reflections on getting started with Azure, building cloud familiarity, and turning theory into hands-on experience."
-				readingTime="5 min read"
-				publishDate="Coming soon"
-			/>
+			<article class="card">
+				<h3>Personal Engineering Blog</h3>
+				<p>A website built with Astro to publish notes, ideas, and practical engineering learnings.</p>
+			</article>
 		</div>
 	</section>
 
 	<section class="about-preview" id="about">
 		<div>
 			<p class="section-label">About</p>
-			<h2>Engineering with care for detail and momentum</h2>
+			<h2>Under Progress</h2>
 		</div>
 		<p>
-			I work across product, frontend, and platform concerns, with a focus on clean interfaces, maintainable code, and thoughtful collaboration.
+			Under Progress
 		</p>
-	</section>
-
-	<section class="content-section" id="projects" aria-labelledby="projects-title">
-		<div class="section-heading">
-			<p class="section-label">Selected Projects</p>
-			<h2 id="projects-title">A few systems I’ve shaped</h2>
-		</div>
-		<div class="card-grid">
-			<ProjectCard title="Design system foundations" description="Created reusable UI patterns for product teams to move faster without sacrificing quality." />
-			<ProjectCard title="Platform reliability" description="Improved deployment health and observability for a customer-facing service." />
-		</div>
 	</section>
 </BaseLayout>
