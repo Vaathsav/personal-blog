@@ -1,23 +1,26 @@
 ---
-const pathname = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
+const createHref = (path) => `${base}${path.replace(/^\//, '')}`;
+
+const pathname = Astro.url.pathname.replace(new RegExp(`^${base.replace(/\/$/, '')}`), '') || '/';
 const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
 
 const navItems = [
-	{ label: 'Home', href: '/' },
-	{ label: 'Blog', href: '/blog' },
-	{ label: 'Projects', href: '/projects' },
-	{ label: 'About', href: '/about' },
-	{ label: 'Contact', href: '/contact' },
+	{ label: 'Home', path: '/' },
+	{ label: 'Blog', path: '/blog' },
+	{ label: 'Projects', path: '/projects' },
+	{ label: 'About', path: '/about' },
+	{ label: 'Contact', path: '/contact' },
 ];
 ---
 
 <header class="site-header">
-	<a class="brand" href="/">Sri Vaathsav</a>
+	<a class="brand" href={base}>Sri Vaathsav</a>
 	<nav class="nav-links" aria-label="Primary navigation">
 		{navItems.map((item) => {
-			const isActive = normalizedPath === item.href;
+			const isActive = normalizedPath === item.path;
 			return (
-				<a href={item.href} aria-current={isActive ? 'page' : undefined}>
+				<a href={createHref(item.path)} aria-current={isActive ? 'page' : undefined}>
 					{item.label}
 				</a>
 			);
