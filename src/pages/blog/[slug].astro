@@ -2,8 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
-const base = import.meta.env.BASE_URL;
-const basePath = `${base.replace(/\/$/, '')}/`;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, '/');
+const createHref = (path) => `${base}${path.replace(/^\//, '')}`;
 
 export async function getStaticPaths() {
 	const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -56,7 +56,7 @@ const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).filter(Boolean)
 
 		<section class="content-section">
 			<div class="card article-card">
-				<a class="back-link" href={`${basePath}blog`}>← Back to Blog</a>
+				<a class="back-link" href={createHref('blog')}>← Back to Blog</a>
 				<div class="article-content">
 					<Content />
 				</div>
@@ -66,12 +66,12 @@ const readingTime = Math.max(1, Math.ceil(post.body.split(/\s+/).filter(Boolean)
 		{(previousPost || nextPost) && (
 			<nav class="article-nav" aria-label="Post navigation">
 				{previousPost ? (
-					<a class="article-nav-link" href={`${basePath}blog/${previousPost.id}`}>
+					<a class="article-nav-link" href={createHref(`blog/${previousPost.id}`)}>
 						<span aria-hidden="true">←</span> Previous article
 					</a>
 				) : <span />}
 				{nextPost ? (
-					<a class="article-nav-link" href={`${basePath}blog/${nextPost.id}`}>
+					<a class="article-nav-link" href={createHref(`blog/${nextPost.id}`)}>
 						Next article <span aria-hidden="true">→</span>
 					</a>
 				) : <span />}
