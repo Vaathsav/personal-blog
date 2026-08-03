@@ -1,6 +1,6 @@
 ---
 const base = import.meta.env.BASE_URL;
-const createHref = (path) => `${base}${path.replace(/^\//, '')}`;
+const createHref = (path) => `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`;
 
 const pathname = Astro.url.pathname.replace(new RegExp(`^${base.replace(/\/$/, '')}`), '') || '/';
 const normalizedPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
